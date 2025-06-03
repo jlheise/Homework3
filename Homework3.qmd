@@ -30,3 +30,48 @@ read_csv2("Homework3data/data.txt", col_names = TRUE)
 # Read in data2
 read_delim("Homework3data/data2.txt", delim = "6", col_types = "fdc")
 ```
+
+---
+## Task 2
+### Part a
+---
+
+```{r}
+# Read in trailblazers data
+trailblazer <- read_csv("Homework3data/trailblazer.csv")
+
+# Make sure data read in correctly
+glimpse(trailblazer)
+```
+
+---
+### Part b
+---
+
+```{r}
+# Pivot & tidy the data
+trailblazer_longer <- pivot_longer(trailblazer, cols = starts_with("Game"), names_to = "Game", values_to = "Points")
+trailblazer_longer <- separate(trailblazer_longer, Game, into = c("Game", "Location"), sep = "_")
+
+head(trailblazer_longer, n = 5)
+```
+
+---
+### Part c
+---
+
+```{r}
+# Answer which players scored more, on average, when playing at home versus away in a single pipline
+trailblazer_wider <-
+  pivot_wider(trailblazer_longer, 
+              values_from = "Points", 
+              names_from = "Location") %>%
+  group_by(Player) %>%
+  summarise(mean_home = mean(Home, na.rm = TRUE), 
+         mean_away = mean(Away, na.rm = TRUE)) %>%
+  mutate(mean_diff = mean_home - mean_away) %>%
+  arrange(desc(mean_diff))
+print(trailblazer_wider)
+
+# Jusuf Nurkic, Robert Covington, Nassir Little, Damian Lillard, and Cody Zeller scored, on average, more points at home through the first 10 games of the season than away.
+```
