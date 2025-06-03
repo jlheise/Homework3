@@ -1,0 +1,32 @@
+---
+title: "Tidyverse Homework 3"
+author: "Jessie Heise"
+format: pdf
+editor: visual
+---
+
+```{r}
+# Load packages needed for assignment
+library(tidyverse)
+library(palmerpenguins)
+```
+
+---
+## Task 1
+### Part a
+#### We cannot use specifically the read.csv() to read in these data because the delimiter is a semicolon instead of a comma. Instead we must use read.csv2()
+---
+
+```{r}
+# Read in data
+read_csv2("Homework3data/data.txt", col_names = TRUE)
+```
+
+---
+### Part b
+---
+
+```{r}
+# Read in data2
+read_delim("Homework3data/data2.txt", delim = "6", col_types = "fdc")
+```
