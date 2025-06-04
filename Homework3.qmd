@@ -11,32 +11,23 @@ library(tidyverse)
 library(palmerpenguins)
 ```
 
----
+```{r}
 ## Task 1
 ### Part a
 #### We cannot use specifically the read.csv() to read in these data because the delimiter is a semicolon instead of a comma. Instead we must use read.csv2()
----
-
-```{r}
 # Read in data
 read_csv2("Homework3data/data.txt", col_names = TRUE)
 ```
 
----
-### Part b
----
-
 ```{r}
+### Part b
 # Read in data2
 read_delim("Homework3data/data2.txt", delim = "6", col_types = "fdc")
 ```
 
----
+```{r}
 ## Task 2
 ### Part a
----
-
-```{r}
 # Read in trailblazers data
 trailblazer <- read_csv("Homework3data/trailblazer.csv")
 
@@ -44,11 +35,8 @@ trailblazer <- read_csv("Homework3data/trailblazer.csv")
 glimpse(trailblazer)
 ```
 
----
-### Part b
----
-
 ```{r}
+### Part b
 # Pivot & tidy the data
 trailblazer_longer <- pivot_longer(trailblazer, cols = starts_with("Game"), names_to = "Game", values_to = "Points")
 trailblazer_longer <- separate(trailblazer_longer, Game, into = c("Game", "Location"), sep = "_")
@@ -56,11 +44,8 @@ trailblazer_longer <- separate(trailblazer_longer, Game, into = c("Game", "Locat
 head(trailblazer_longer, n = 5)
 ```
 
----
-### Part c
----
-
 ```{r}
+### Part c
 # Answer which players scored more, on average, when playing at home versus away in a single pipline
 trailblazer_wider <-
   pivot_wider(trailblazer_longer, 
@@ -74,4 +59,32 @@ trailblazer_wider <-
 print(trailblazer_wider)
 
 # Jusuf Nurkic, Robert Covington, Nassir Little, Damian Lillard, and Cody Zeller scored, on average, more points at home through the first 10 games of the season than away.
+```
+
+---
+## Task 3
+### Part a
+#### <NULL> is saying that there are is no list for that species an island.
+#### <dbl [52]> is describing that there is a vector of variables that are doubles.
+#### <list> is describing that the output tibble contains a list.
+---
+
+```{r}
+### Part b
+penguins |>
+  select(species, island, bill_length_mm) |>
+  pivot_wider(
+    names_from = island, values_from = bill_length_mm
+  )
+```
+
+```{r}
+## Task 4
+# Adelie is 26 and Gentoo is 30
+penguins <- order('species')
+penguins <- case_when(
+    is.na(bill_length_mm) ~ 26,
+    is.na(bill_length_mm) ~ 30
+  )
+head(penguins, n = 10)
 ```
