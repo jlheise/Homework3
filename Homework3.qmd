@@ -14,7 +14,9 @@ library(palmerpenguins)
 ```{r}
 ## Task 1
 ### Part a
-#### We cannot use specifically the read.csv() to read in these data because the delimiter is a semicolon instead of a comma. Instead we must use read.csv2()
+#### We cannot use specifically the read.csv() to read in these data because
+#### the delimiter is a semicolon instead of a comma. Instead we must use 
+#### read.csv2()
 # Read in data
 read_csv2("Homework3data/data.txt", col_names = TRUE)
 ```
@@ -38,15 +40,28 @@ glimpse(trailblazer)
 ```{r}
 ### Part b
 # Pivot & tidy the data
-trailblazer_longer <- pivot_longer(trailblazer, cols = starts_with("Game"), names_to = "Game", values_to = "Points")
-trailblazer_longer <- separate(trailblazer_longer, Game, into = c("Game", "Location"), sep = "_")
+trailblazer_longer <- 
+  pivot_longer(
+    trailblazer, 
+    cols = starts_with("Game"), 
+    names_to = "Game", 
+    values_to = "Points"
+    )
+trailblazer_longer <- 
+  separate(
+    trailblazer_longer, 
+    Game, 
+    into = c("Game", "Location"), 
+    sep = "_"
+    )
 
 head(trailblazer_longer, n = 5)
 ```
 
 ```{r}
 ### Part c
-# Answer which players scored more, on average, when playing at home versus away in a single pipline
+# Answer which players scored more, on average, when playing at home versus 
+# away in a single pipline
 trailblazer_wider <-
   pivot_wider(trailblazer_longer, 
               values_from = "Points", 
@@ -58,33 +73,40 @@ trailblazer_wider <-
   arrange(desc(mean_diff))
 print(trailblazer_wider)
 
-# Jusuf Nurkic, Robert Covington, Nassir Little, Damian Lillard, and Cody Zeller scored, on average, more points at home through the first 10 games of the season than away.
+# Jusuf Nurkic, Robert Covington, Nassir Little, Damian Lillard, 
+# and Cody Zeller scored, on average, more points at home through
+# the first 10 games of the season than away.
 ```
 
----
+```{r}
 ## Task 3
 ### Part a
 #### <NULL> is saying that there are is no list for that species an island.
 #### <dbl [52]> is describing that there is a vector of variables that are doubles.
 #### <list> is describing that the output tibble contains a list.
----
-
-```{r}
 ### Part b
-penguins |>
-  select(species, island, bill_length_mm) |>
-  pivot_wider(
-    names_from = island, values_from = bill_length_mm
-  )
+penguins %>%
+  select(species, island, bill_length_mm) %>%
+  count (species, island) %>%
+  pivot_wider(values_from = n, names_from = island, values_fill = 0) %>%
+  mutate(across(c(Biscoe, Dream, Torgersen), as.double))
+
+
 ```
 
 ```{r}
 ## Task 4
 # Adelie is 26 and Gentoo is 30
-penguins <- order('species')
-penguins <- case_when(
-    is.na(bill_length_mm) ~ 26,
-    is.na(bill_length_mm) ~ 30
-  )
-head(penguins, n = 10)
+penguins %>%
+  mutate(
+    bill_length_mm = ifelse(
+      is.na(bill_length_mm),
+      case_when(
+        species == "Adelie" ~ 26,
+        species == "Gentoo" ~ 30
+        ),
+      bill_length_mm
+    )) %>%
+  arrange(bill_length_mm) %>%
+  head(penguins, n = 10)
 ```
